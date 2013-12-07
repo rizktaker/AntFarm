@@ -1,0 +1,46 @@
+<project name="Flex Ant Farm" default="test" basedir="..">
+ 
+   <!-- load previously defined configuration properties file -->
+   <property file="${basedir}/build/build.properties" />
+                              
+   <!-- points to our flexTasks.jar we copied to the libs folder to distribute with the project -->
+   <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/> 
+	<taskdef resource="flexUnitTasks.tasks">
+	   <classpath>
+	      <fileset dir="${LIBS_DIR}">
+	         <include name="flexUnitTasks*.jar" />
+	      </fileset>
+	   </classpath>
+	</taskdef>
+	
+   <!-- delete and create the DEPLOY dir again -->
+   <target name="init">
+      <delete dir="${DEPLOY_DIR}" />
+      <mkdir dir="${DEPLOY_DIR}" />       
+   </target>
+                              
+   <!-- Build and output the Main.swf-->
+   <target name="compile flex project" depends="init">
+      <mxmlc file="${SRC_DIR}/AntFarm.mxml" output="${DEPLOY_DIR}/AntFarm.swf">
+         <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+         <source-path path-element="${FLEX_HOME}/frameworks"/>
+         <compiler.debug>false</compiler.debug>             
+      </mxmlc>
+   </target>
+ 
+	<target name="test" depends="compile flex project">
+		<flexunit
+		   player="flash"
+		   toDir="${basedir}/reports"
+		   haltonfailure="true"
+		   verbose="true"
+		   localTrusted="true">
+		   <source dir="${SRC_DIR}" />
+		   <testSource dir="${SRC_DIR}">
+		      <include name="**/Test*.as" />
+		      <include name="**/Test*.mxml" />
+		   </testSource>
+		   <library dir="${LIBS_DIR}" />
+		</flexunit>
+	</target>
+</project>
