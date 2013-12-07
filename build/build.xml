@@ -17,6 +17,7 @@
    <target name="init">
       <delete dir="${DEPLOY_DIR}" />
       <mkdir dir="${DEPLOY_DIR}" />       
+      <mkdir dir="${basedir}/reports" />       
    </target>
                               
    <!-- Build and output the Main.swf-->
